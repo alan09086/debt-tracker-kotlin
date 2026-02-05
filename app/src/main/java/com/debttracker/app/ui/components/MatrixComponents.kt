@@ -62,7 +62,8 @@ fun MatrixButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    isDanger: Boolean = false
+    isDanger: Boolean = false,
+    compact: Boolean = false
 ) {
     val borderColor = if (isDanger) MatrixRed else MatrixGreen
     val textColor = if (isDanger) MatrixRed else MatrixGreen
@@ -76,11 +77,13 @@ fun MatrixButton(
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = textColor,
             disabledContentColor = textColor.copy(alpha = 0.5f)
-        )
+        ),
+        contentPadding = if (compact) PaddingValues(horizontal = 8.dp, vertical = 4.dp) else ButtonDefaults.ContentPadding
     ) {
         Text(
-            text = "[ $text ]",
-            style = MaterialTheme.typography.labelLarge
+            text = if (compact) text else "[ $text ]",
+            style = if (compact) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelLarge,
+            maxLines = 1
         )
     }
 }

@@ -100,16 +100,17 @@ fun SettingsScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     MatrixButton(
-                        text = "Export",
+                        text = "EXPORT",
                         onClick = {
                             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
                             val filename = "debt-tracker-backup-${dateFormat.format(Date())}.json"
                             exportLauncher.launch(filename)
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        compact = true
                     )
                     MatrixButton(
-                        text = "Share",
+                        text = "SHARE",
                         onClick = {
                             scope.launch {
                                 try {
@@ -125,14 +126,16 @@ fun SettingsScreen(
                                 }
                             }
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        compact = true
                     )
                     MatrixButton(
-                        text = "Import",
+                        text = "IMPORT",
                         onClick = {
                             importLauncher.launch(arrayOf("application/json"))
                         },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        compact = true
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
