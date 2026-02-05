@@ -13,8 +13,3 @@ val MatrixGreenBorderDark = Color(0xFF003300)
 val MatrixRed = Color(0xFFFF0040)
 val BitcoinOrange = Color(0xFFF7931A)
 val DogecoinGold = Color(0xFFC2A633)
-
-// Semantic colors
-val PositiveBalance = MatrixGreen
-val NegativeBalance = MatrixRed
-val ZeroBalance = MatrixGreenDim
