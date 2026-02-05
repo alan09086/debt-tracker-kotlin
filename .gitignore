@@ -16,6 +16,7 @@ app/release/
 
 # Signing
 keystore.properties
+KEYSTORE-INFO.txt
 
 # Kotlin
 *.kotlin_module
