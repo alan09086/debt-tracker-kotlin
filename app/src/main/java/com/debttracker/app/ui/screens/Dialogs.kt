@@ -23,6 +23,7 @@ import com.debttracker.app.data.model.Transaction
 import com.debttracker.app.data.model.TransactionType
 import com.debttracker.app.ui.components.*
 import com.debttracker.app.ui.theme.*
+import java.util.Locale
 
 @Composable
 fun AddPersonDialog(
@@ -131,7 +132,7 @@ fun EditTransactionDialog(
     onDismiss: () -> Unit,
     onConfirm: (Double, String) -> Unit
 ) {
-    var amount by remember { mutableStateOf(String.format("%.2f", kotlin.math.abs(transaction.amount))) }
+    var amount by remember { mutableStateOf(String.format(Locale.US, "%.2f", kotlin.math.abs(transaction.amount))) }
     var description by remember { mutableStateOf(transaction.description) }
 
     MatrixDialog(

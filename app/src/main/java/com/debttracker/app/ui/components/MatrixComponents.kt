@@ -17,6 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.debttracker.app.ui.theme.*
+import java.util.Locale
 
 @Composable
 fun MatrixCard(
@@ -158,8 +159,8 @@ fun BalanceBadge(
     }
 
     val text = when {
-        balance > 0 -> "+$${String.format("%.2f", balance)}"
-        balance < 0 -> "-$${String.format("%.2f", kotlin.math.abs(balance))}"
+        balance > 0 -> "+$${String.format(Locale.US, "%.2f", balance)}"
+        balance < 0 -> "-$${String.format(Locale.US, "%.2f", kotlin.math.abs(balance))}"
         else -> "$0.00"
     }
 

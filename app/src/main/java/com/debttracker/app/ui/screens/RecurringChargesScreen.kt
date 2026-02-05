@@ -130,7 +130,7 @@ fun RecurringChargeItem(
             val prefix = if (charge.type == TransactionType.DEBT) "+" else "-"
 
             Text(
-                text = "$prefix$${String.format("%.2f", charge.amount)}",
+                text = "$prefix$${String.format(Locale.US, "%.2f", charge.amount)}",
                 style = MaterialTheme.typography.titleMedium,
                 color = amountColor,
                 modifier = Modifier.padding(horizontal = 12.dp)

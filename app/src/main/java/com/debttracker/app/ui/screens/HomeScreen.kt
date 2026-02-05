@@ -17,6 +17,7 @@ import com.debttracker.app.data.model.Transaction
 import com.debttracker.app.ui.DebtTrackerViewModel
 import com.debttracker.app.ui.components.*
 import com.debttracker.app.ui.theme.*
+import java.util.Locale
 
 @Composable
 fun HomeScreen(
@@ -147,9 +148,9 @@ fun TransactionPreviewItem(transaction: Transaction) {
         )
         Text(
             text = if (transaction.amount > 0) {
-                "+$${String.format("%.2f", transaction.amount)}"
+                "+$${String.format(Locale.US, "%.2f", transaction.amount)}"
             } else {
-                "-$${String.format("%.2f", kotlin.math.abs(transaction.amount))}"
+                "-$${String.format(Locale.US, "%.2f", kotlin.math.abs(transaction.amount))}"
             },
             style = MaterialTheme.typography.bodySmall,
             color = if (transaction.amount > 0) MatrixGreen else MatrixRed

@@ -138,9 +138,9 @@ fun TransactionItem(
 
             Text(
                 text = if (transaction.amount > 0) {
-                    "+$${String.format("%.2f", transaction.amount)}"
+                    "+$${String.format(Locale.US, "%.2f", transaction.amount)}"
                 } else {
-                    "-$${String.format("%.2f", kotlin.math.abs(transaction.amount))}"
+                    "-$${String.format(Locale.US, "%.2f", kotlin.math.abs(transaction.amount))}"
                 },
                 style = MaterialTheme.typography.titleMedium,
                 color = if (transaction.amount > 0) MatrixGreen else MatrixRed,
