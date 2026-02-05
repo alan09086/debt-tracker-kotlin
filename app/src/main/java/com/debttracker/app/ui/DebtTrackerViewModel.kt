@@ -145,25 +145,6 @@ class DebtTrackerViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     // Backup functions
-    fun getBackupJson(): String {
-        val gson = Gson()
-        // We need to get all data synchronously for backup
-        var json = ""
-        viewModelScope.launch {
-            val persons = database.personDao().getAllPersons().first()
-            val transactions = database.transactionDao().getAllTransactions()
-            val recurring = database.recurringChargeDao().getAllCharges()
-
-            val backup = BackupData(
-                persons = persons,
-                transactions = transactions,
-                recurringCharges = recurring
-            )
-            json = gson.toJson(backup)
-        }
-        return json
-    }
-
     suspend fun getBackupJsonAsync(): String {
         val gson = Gson()
         val persons = database.personDao().getAllPersons().first()

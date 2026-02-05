@@ -151,27 +151,6 @@ class DebtRepository(
     }
 
     // Backup/Restore
-    suspend fun getBackupData(): BackupData {
-        return BackupData(
-            persons = personDao.getAllPersons().let { flow ->
-                val list = mutableListOf<Person>()
-                // We need to collect once, so we'll query directly
-                list
-            },
-            transactions = transactionDao.getAllTransactions(),
-            recurringCharges = recurringChargeDao.getAllCharges()
-        )
-    }
-
-    suspend fun getAllPersonsSnapshot(): List<Person> {
-        // Direct query for backup
-        return personDao.getAllPersons().let {
-            val result = mutableListOf<Person>()
-            // This is a workaround - we'll collect the flow in the ViewModel
-            result
-        }
-    }
-
     suspend fun clearAllData() {
         transactionDao.deleteAll()
         recurringChargeDao.deleteAll()
