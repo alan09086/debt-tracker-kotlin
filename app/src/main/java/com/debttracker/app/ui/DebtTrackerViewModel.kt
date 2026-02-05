@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 class DebtTrackerViewModel(application: Application) : AndroidViewModel(application) {
     private val database = DebtTrackerDatabase.getDatabase(application)
     private val repository = DebtRepository(
+        database,
         database.personDao(),
         database.transactionDao(),
         database.recurringChargeDao()

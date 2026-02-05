@@ -1,5 +1,7 @@
 package com.debttracker.app.data.repository
 
+import androidx.room.withTransaction
+import com.debttracker.app.data.database.DebtTrackerDatabase
 import com.debttracker.app.data.database.PersonDao
 import com.debttracker.app.data.database.RecurringChargeDao
 import com.debttracker.app.data.database.TransactionDao
@@ -7,6 +9,7 @@ import com.debttracker.app.data.model.*
 import kotlinx.coroutines.flow.Flow
 
 class DebtRepository(
+    private val database: DebtTrackerDatabase,
     private val personDao: PersonDao,
     private val transactionDao: TransactionDao,
     private val recurringChargeDao: RecurringChargeDao
@@ -50,17 +53,19 @@ class DebtRepository(
         type: TransactionType,
         isRecurring: Boolean = false
     ): Long {
-        val signedAmount = if (type == TransactionType.DEBT) amount else -amount
-        val transaction = Transaction(
-            personId = personId,
-            amount = signedAmount,
-            description = description,
-            type = type,
-            isRecurring = isRecurring
-        )
-        val id = transactionDao.insert(transaction)
-        personDao.updateBalance(personId, signedAmount)
-        return id
+        return database.withTransaction {
+            val signedAmount = if (type == TransactionType.DEBT) amount else -amount
+            val transaction = Transaction(
+                personId = personId,
+                amount = signedAmount,
+                description = description,
+                type = type,
+                isRecurring = isRecurring
+            )
+            val id = transactionDao.insert(transaction)
+            personDao.updateBalance(personId, signedAmount)
+            id
+        }
     }
 
     suspend fun updateTransaction(
@@ -68,22 +73,25 @@ class DebtRepository(
         newAmount: Double,
         newDescription: String
     ) {
-        val transaction = transactionDao.getTransactionById(transactionId) ?: return
-        val oldAmount = transaction.amount
-        val newSignedAmount = if (transaction.type == TransactionType.DEBT) newAmount else -newAmount
+        database.withTransaction {
+            val transaction = transactionDao.getTransactionById(transactionId) ?: return@withTransaction
+            val oldAmount = transaction.amount
+            val newSignedAmount = if (transaction.type == TransactionType.DEBT) newAmount else -newAmount
 
-        transactionDao.update(transaction.copy(
-            amount = newSignedAmount,
-            description = newDescription
-        ))
+            transactionDao.update(transaction.copy(
+                amount = newSignedAmount,
+                description = newDescription
+            ))
 
-        // Update balance: remove old, add new
-        personDao.updateBalance(transaction.personId, -oldAmount + newSignedAmount)
+            personDao.updateBalance(transaction.personId, -oldAmount + newSignedAmount)
+        }
     }
 
     suspend fun deleteTransaction(transaction: Transaction) {
-        transactionDao.delete(transaction)
-        personDao.updateBalance(transaction.personId, -transaction.amount)
+        database.withTransaction {
+            transactionDao.delete(transaction)
+            personDao.updateBalance(transaction.personId, -transaction.amount)
+        }
     }
 
     suspend fun getTransactionById(id: Long): Transaction? = transactionDao.getTransactionById(id)
@@ -122,29 +130,31 @@ class DebtRepository(
         var skipped = 0
 
         for (charge in dueCharges) {
-            var nextDue = charge.nextDue
-            var iterations = 0
+            database.withTransaction {
+                var nextDue = charge.nextDue
+                var iterations = 0
 
-            while (nextDue <= now && iterations < MAX_RECURRING_BACKFILL) {
-                addTransaction(
-                    personId = charge.personId,
-                    amount = charge.amount,
-                    description = "${charge.description} [AUTO]",
-                    type = charge.type,
-                    isRecurring = true
-                )
-                nextDue += charge.frequencyDays * 24 * 60 * 60 * 1000L
-                applied++
-                iterations++
+                while (nextDue <= now && iterations < MAX_RECURRING_BACKFILL) {
+                    addTransaction(
+                        personId = charge.personId,
+                        amount = charge.amount,
+                        description = "${charge.description} [AUTO]",
+                        type = charge.type,
+                        isRecurring = true
+                    )
+                    nextDue += charge.frequencyDays * 24 * 60 * 60 * 1000L
+                    applied++
+                    iterations++
+                }
+
+                // If we hit the limit, fast-forward
+                if (iterations >= MAX_RECURRING_BACKFILL && nextDue <= now) {
+                    skipped++
+                    nextDue = now + charge.frequencyDays * 24 * 60 * 60 * 1000L
+                }
+
+                recurringChargeDao.update(charge.copy(nextDue = nextDue))
             }
-
-            // If we hit the limit, fast-forward
-            if (iterations >= MAX_RECURRING_BACKFILL && nextDue <= now) {
-                skipped++
-                nextDue = now + charge.frequencyDays * 24 * 60 * 60 * 1000L
-            }
-
-            recurringChargeDao.update(charge.copy(nextDue = nextDue))
         }
 
         return Pair(applied, skipped)
@@ -152,15 +162,21 @@ class DebtRepository(
 
     // Backup/Restore
     suspend fun clearAllData() {
-        transactionDao.deleteAll()
-        recurringChargeDao.deleteAll()
-        personDao.deleteAll()
+        database.withTransaction {
+            transactionDao.deleteAll()
+            recurringChargeDao.deleteAll()
+            personDao.deleteAll()
+        }
     }
 
     suspend fun restoreFromBackup(backup: BackupData) {
-        clearAllData()
-        backup.persons.forEach { personDao.insert(it) }
-        backup.transactions.forEach { transactionDao.insert(it) }
-        backup.recurringCharges.forEach { recurringChargeDao.insert(it) }
+        database.withTransaction {
+            transactionDao.deleteAll()
+            recurringChargeDao.deleteAll()
+            personDao.deleteAll()
+            backup.persons.forEach { personDao.insert(it) }
+            backup.transactions.forEach { transactionDao.insert(it) }
+            backup.recurringCharges.forEach { recurringChargeDao.insert(it) }
+        }
     }
 }
