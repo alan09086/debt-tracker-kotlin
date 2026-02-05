@@ -11,7 +11,7 @@ import com.debttracker.app.data.model.Transaction
 @Database(
     entities = [Person::class, Transaction::class, RecurringCharge::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class DebtTrackerDatabase : RoomDatabase() {
     abstract fun personDao(): PersonDao
