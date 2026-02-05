@@ -7,10 +7,11 @@
 -dontwarn androidx.room.paging.**
 
 # Keep Room entities and their fields
--keep class com.debttracker.app.data.Person { *; }
--keep class com.debttracker.app.data.Transaction { *; }
--keep class com.debttracker.app.data.RecurringCharge { *; }
--keep class com.debttracker.app.data.BackupData { *; }
+-keep class com.debttracker.app.data.model.Person { *; }
+-keep class com.debttracker.app.data.model.Transaction { *; }
+-keep class com.debttracker.app.data.model.RecurringCharge { *; }
+-keep class com.debttracker.app.data.model.BackupData { *; }
+-keep class com.debttracker.app.data.model.TransactionType { *; }
 
 # Gson serialization
 -keepattributes Signature
@@ -22,7 +23,7 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 # Keep data classes for Gson reflection
--keepclassmembers class com.debttracker.app.data.** {
+-keepclassmembers class com.debttracker.app.data.model.** {
     <fields>;
     <init>(...);
 }
@@ -38,6 +39,3 @@
     volatile <fields>;
 }
 
-# Compose
--dontwarn androidx.compose.**
--keep class androidx.compose.** { *; }
