@@ -216,7 +216,7 @@ fun MatrixHeader(
 fun MatrixDivider(
     modifier: Modifier = Modifier
 ) {
-    Divider(
+    HorizontalDivider(
         modifier = modifier,
         thickness = 1.dp,
         color = MatrixGreenBorderDark
