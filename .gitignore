@@ -18,6 +18,9 @@ app/release/
 keystore.properties
 KEYSTORE-INFO.txt
 
+# Release builds
+releases/
+
 # Kotlin
 *.kotlin_module
 
