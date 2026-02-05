@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,10 +17,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import com.debttracker.app.ui.DebtTrackerViewModel
 import com.debttracker.app.ui.components.*
 import com.debttracker.app.ui.theme.*
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -115,10 +116,30 @@ fun SettingsScreen(
                             scope.launch {
                                 try {
                                     val json = viewModel.getBackupJsonAsync()
+                                    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    val filename = "debt-tracker-backup-${dateFormat.format(Date())}.json"
+
+                                    // Create backups directory in cache
+                                    val backupsDir = File(context.cacheDir, "backups")
+                                    backupsDir.mkdirs()
+
+                                    // Write backup file
+                                    val backupFile = File(backupsDir, filename)
+                                    backupFile.writeText(json)
+
+                                    // Get shareable URI via FileProvider
+                                    val uri = FileProvider.getUriForFile(
+                                        context,
+                                        "${context.packageName}.fileprovider",
+                                        backupFile
+                                    )
+
+                                    // Share the file
                                     val intent = Intent(Intent.ACTION_SEND).apply {
                                         type = "application/json"
-                                        putExtra(Intent.EXTRA_TEXT, json)
+                                        putExtra(Intent.EXTRA_STREAM, uri)
                                         putExtra(Intent.EXTRA_SUBJECT, "Debt Tracker Backup")
+                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                     }
                                     context.startActivity(Intent.createChooser(intent, "Share backup"))
                                 } catch (e: Exception) {
