@@ -90,8 +90,9 @@ fun PersonCard(
     viewModel: DebtTrackerViewModel,
     onClick: () -> Unit
 ) {
-    val recentTransactions by viewModel.getRecentTransactions(person.id)
-        .collectAsState(initial = emptyList())
+    val recentTransactions by remember(person.id) {
+        viewModel.getRecentTransactions(person.id)
+    }.collectAsState(initial = emptyList())
 
     val accentColor = when {
         person.balance > 0 -> MatrixGreen
