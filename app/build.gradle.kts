@@ -18,7 +18,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.debttracker.app"
+        applicationId = "com.agsoftware.debttracker"
         minSdk = 26
         targetSdk = 34
         versionCode = 2
