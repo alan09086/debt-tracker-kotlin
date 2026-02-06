@@ -468,17 +468,15 @@ fun ConfirmDialog(
         Spacer(modifier = Modifier.height(16.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
         ) {
             MatrixButton(
                 text = "Cancel",
-                onClick = onDismiss,
-                modifier = Modifier.weight(1f)
+                onClick = onDismiss
             )
             MatrixButton(
                 text = "Confirm",
                 onClick = onConfirm,
-                modifier = Modifier.weight(1f),
                 isDanger = isDanger
             )
         }
