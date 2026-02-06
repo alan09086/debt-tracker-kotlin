@@ -8,7 +8,7 @@
 
 **App ID:** `com.agsoftware.debttracker` (AG Software)
 
-**Build:** `JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew bundleRelease`
+**Build:** `./gradlew bundleRelease` (JDK 21 pinned in gradle.properties)
 
 ---
 
@@ -62,10 +62,17 @@
 ## Phase 4.5: Bugfixes - COMPLETE
 
 ### Task 10.1: Fix confirmation dialog button cutoff - DONE
-- Removed `Modifier.weight(1f)` from Cancel/Confirm buttons in `ConfirmDialog`
-- Buttons now size to content and align right instead of being squeezed into half-width columns
+- Stacked Cancel/Confirm buttons vertically in `ConfirmDialog` (full-width each)
+- Horizontal layout caused "[ Confirm ]" text to clip on narrow screens
 - Fixes all 4 confirmation dialogs (delete person, purge data, delete recurring charge, delete transaction)
-- Version bumped to 1.1.1 (versionCode 4)
+- Version bumped to 1.1.2 (versionCode 5)
+
+### Task 10.2: Fix app launcher icon - DONE
+- Replaced default Android Studio placeholder icons with Debt Tracker branding
+- Generated all mipmap densities (mdpi through xxxhdpi) from 512x512 Play Store icon
+- Generated adaptive icon foreground with proper safe zone padding
+- Generated circular `ic_launcher_round.png` variants
+- Changed adaptive icon background from white (#FFFFFF) to black (#000000)
 
 ## Phase 5: Play Store Release - IN PROGRESS
 
@@ -88,9 +95,11 @@
 - [x] Bumped compileSdk/targetSdk to 35 (Play Store requirement)
 - [x] Installed SDK platform 35
 - [x] Rebuilt AAB with versionCode 3, uploaded to Play Console closed testing
-- [x] v1.1.1 bugfix (versionCode 4): fixed dialog button cutoff
+- [x] v1.1.1 bugfix (versionCode 4): dialog button cutoff (partial fix)
+- [x] v1.1.2 bugfix (versionCode 5): dialog buttons stacked vertically, app icon fixed
 - [ ] Waiting for Google review of closed testing release
-- [ ] Get 12 testers to opt in (Reddit: r/playmytesting, r/TestMyApp)
+- [x] Reddit posts drafted for r/TestMyApp and r/playmytesting (`release/reddit-posts.txt`)
+- [ ] Post to Reddit and get 12 testers to opt in
 - [ ] 14-day closed testing period
 - [ ] Apply for production access
 
@@ -102,16 +111,17 @@ Location: `release/` (gitignored — binaries not tracked)
 
 | File | Description |
 |------|-------------|
-| `debt-tracker-v1.1.1.aab` | Signed release bundle (2.6MB) |
-| `debt-tracker-v1.1.1-debug.apk` | Debug APK for testing (16MB) |
+| `debt-tracker-v1.1.2.aab` | Signed release bundle |
+| `debt-tracker-v1.1.2-debug.apk` | Debug APK for testing |
 | `app-icon-512.png` | Play Store app icon |
 | `feature-graphic-1024x500.png` | Play Store feature graphic |
 | `photo_1` through `photo_4` | Screenshots |
 | `store-listing.txt` | Short + full description |
-| `release-notes.txt` | v1.1.1 changelog |
+| `release-notes.txt` | v1.1.2 changelog |
+| `reddit-posts.txt` | r/TestMyApp and r/playmytesting posts |
 
 ## Key Notes
 
 - **Keystore**: `~/projects/debt-tracker-kotlin/release.keystore` (on disk, NOT in git)
-- **JDK**: Must use Java 21 (`JAVA_HOME=/usr/lib/jvm/java-21-openjdk`) — JDK 25 incompatible with Kotlin compiler
+- **JDK**: Java 21 pinned in `gradle.properties` — JDK 25 incompatible with AGP/Kotlin
 - **GitHub**: https://github.com/alan09086/debt-tracker-kotlin (public — for GitHub Pages)
