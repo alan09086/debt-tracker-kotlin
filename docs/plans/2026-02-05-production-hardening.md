@@ -59,6 +59,14 @@
 - Backup/restore code path verified
 - Version bumped to 1.1.0
 
+## Phase 4.5: Bugfixes - COMPLETE
+
+### Task 10.1: Fix confirmation dialog button cutoff - DONE
+- Removed `Modifier.weight(1f)` from Cancel/Confirm buttons in `ConfirmDialog`
+- Buttons now size to content and align right instead of being squeezed into half-width columns
+- Fixes all 4 confirmation dialogs (delete person, purge data, delete recurring charge, delete transaction)
+- Version bumped to 1.1.1 (versionCode 4)
+
 ## Phase 5: Play Store Release - IN PROGRESS
 
 ### Task 11: Prepare store assets - DONE
@@ -79,8 +87,8 @@
 - [x] Changed applicationId to `com.agsoftware.debttracker` (original was taken)
 - [x] Bumped compileSdk/targetSdk to 35 (Play Store requirement)
 - [x] Installed SDK platform 35
-- [x] Rebuilt AAB with versionCode 3
-- [x] Uploaded AAB to Play Console closed testing track
+- [x] Rebuilt AAB with versionCode 3, uploaded to Play Console closed testing
+- [x] v1.1.1 bugfix (versionCode 4): fixed dialog button cutoff
 - [ ] Waiting for Google review of closed testing release
 - [ ] Get 12 testers to opt in (Reddit: r/playmytesting, r/TestMyApp)
 - [ ] 14-day closed testing period
@@ -94,13 +102,13 @@ Location: `release/` (gitignored — binaries not tracked)
 
 | File | Description |
 |------|-------------|
-| `debt-tracker-v1.1.0.aab` | Signed release bundle (2.6MB) |
-| `debt-tracker-v1.1.0-debug.apk` | Debug APK for testing (16MB) |
+| `debt-tracker-v1.1.1.aab` | Signed release bundle (2.6MB) |
+| `debt-tracker-v1.1.1-debug.apk` | Debug APK for testing (16MB) |
 | `app-icon-512.png` | Play Store app icon |
 | `feature-graphic-1024x500.png` | Play Store feature graphic |
 | `photo_1` through `photo_4` | Screenshots |
 | `store-listing.txt` | Short + full description |
-| `release-notes.txt` | v1.1.0 changelog |
+| `release-notes.txt` | v1.1.1 changelog |
 
 ## Key Notes
 
